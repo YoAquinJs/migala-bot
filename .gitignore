@@ -1,0 +1,8 @@
+/.vscode
+/.idea
+
+/bot/__pychache__
+/database/__pycache__
+
+settings.json
+__pycache__
