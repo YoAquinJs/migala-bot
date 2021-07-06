@@ -1,0 +1,10 @@
+discord.py
+discord-py-slash-commands
+PyNaCl
+moviepy
+tube_dl
+requests
+pytz
+pymongo
+dnspython
+gTTS

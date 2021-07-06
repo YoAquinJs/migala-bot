@@ -9,7 +9,7 @@ def init_client():
     global client
     global_settings = get_global_settings()
     
-    intents = discord.Intents.default()
+    intents = discord.Intents.all()
     intents.members = True
 
     client = commands.Bot(command_prefix=global_settings["prefix"], help_command=None,

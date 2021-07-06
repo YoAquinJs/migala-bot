@@ -64,12 +64,12 @@ async def on_raw_reaction_add(payload):
         return
 
     guild = client.get_guild(payload.guild_id)
-    channel = discord.utils.get(client.get_guild(payload.guild_id).channels, id=payload.channel_id)
-    msg = await channel.fetch_message(payload.message_id)
 
     selector = query("msg_id", payload.message_id, guild, Collection.selectors.value)
-
     if selector is not None:
+        channel = discord.utils.get(client.get_guild(payload.guild_id).channels, id=payload.channel_id)
+        msg = await channel.fetch_message(payload.message_id)
+
         await msg.remove_reaction(payload.emoji, payload.member)
     
         if str(payload.emoji) == "❌":
@@ -84,3 +84,30 @@ async def on_raw_reaction_add(payload):
             await payload.member.add_roles(role)
         else:
             await payload.member.remove_roles(role)
+
+    poll = query("msg_id", payload.message_id, guild, Collection.polls.value)
+    if poll is not None:
+        if payload.emoji in poll["options"].keys():
+            poll["options"][payload.emoi]["votes"].append(payload.member.id)
+
+        if poll["unique_vote"] is True:
+            for emoji in poll["options"].keys():
+                if emoji == payload.emoji:
+                    continue
+                if payload.member.id in poll["options"][emoji]["votes"]:
+                    poll["options"][emoji]["votes"].remove(payload.member.id)
+        
+        modify("msg_id", payload.message_id, "options", poll["options"], guild, Collection.polls.value)
+
+@client.event
+async def on_raw_reaction_remove(payload):
+    poll = query("msg_id", payload.message_id, guild, Collection.polls.value)
+    guild = client.get_guild(payload.guild_id)
+
+    if poll is not None:
+        author_id = await client.fetch_user(payload.user_id)
+
+        if payload.emoji in poll["options"].keys():
+            poll["options"][payload.emoi]["votes"].remove(author_id)
+
+        modify("msg_id", payload.message_id, "options", poll["options"], guild, Collection.polls.value)

@@ -18,10 +18,7 @@ from database.mongo_client import close_client
 
 client = get_client()
 slash = SlashCommand(client, sync_commands=True)
-guild_ids = []
-for guild in client.guilds:
-    guild_ids.add(guild.id)
-
+guild_ids = [837859767308910612]
 global_settings = get_global_settings()
 
 
@@ -42,28 +39,28 @@ async def stop_bot(ctx: Context):
 
 @slash.slash(name="ping", guild_ids=guild_ids, description="latencia del bot")
 async def ping_chek(ctx: SlashContext):
-    await send_message(ctx, f"latencia: {round(client.latency * 1000)}ms")
+    await ctx.send(f"latencia: {round(client.latency * 1000)}ms")
 
 
-@client.command(name="unirse")
-async def join(ctx: Context, called_in_play=False):
-    if not ctx.message.author.voice:
-        await send_message(ctx, "entra a un canal")
-        return
-    channel = ctx.message.author.voice.channel
-    await channel.connect()
-
-    try:
-        await channel.connect()
-        await send_message(ctx, f"unido a {channel}")
-    except:
-        voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-        if channel == voice.channel and not called_in_play:
-            await send_message(ctx, f"ya estoy en {channel}")
-            return
-        if channel != voice.channel:
-            await voice.move_to(channel)
-            await send_message(ctx, f"unido a {channel}")
+#@client.command(name="unirse")
+#async def join(ctx: Context, called_in_play=False):
+#    if not ctx.message.author.voice:
+#        await send_message(ctx, "entra a un canal")
+#        return
+#    channel = ctx.message.author.voice.channel
+#    await channel.connect()
+#
+#    try:
+#        await channel.connect()
+#        await send_message(ctx, f"unido a {channel}")
+#    except:
+#        voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+#        if channel == voice.channel and not called_in_play:
+#            await send_message(ctx, f"ya estoy en {channel}")
+#            return
+#        if channel != voice.channel:
+#            await voice.move_to(channel)
+#            await send_message(ctx, f"unido a {channel}")
 
 #@client.command(name="voz")
 #async def tts(ct: Context, *, text: str):
@@ -94,87 +91,87 @@ async def join(ctx: Context, called_in_play=False):
 #        await send_message(ctx, "se esta diciendo un mensaje")
 #        return
 
-@client.command(name="tocar")
-async def play(ctx: Context, *, search: str):
-    await join(ctx, True)
-    try:
-        await stop(ctx)
-        if os.path.isfile(f"{get_current_dir()}/song.mp4"):
-            os.remove(f"{get_current_dir()}/song.mp4")
-            print("removed mp4")
-    except:
-        print("couldn't delete the mp4")
-        return
+#@client.command(name="tocar")
+#async def play(ctx: Context, *, search: str):
+#    await join(ctx, True)
+#    try:
+#        await stop(ctx)
+#        if os.path.isfile(f"{get_current_dir()}/song.mp4"):
+#            os.remove(f"{get_current_dir()}/song.mp4")
+#            print("removed mp4")
+#    except:
+#        print("couldn't delete the mp4")
+#        return
+#
+#    # region url
+#    search_url = 'https://www.youtube.com/results?q=' + search
+#    count = 0
+#    cont = requests.get(search_url)
+#    lst = str(cont.content).split('"')
+#    for i in lst:
+#        count += 1
+#        if i == 'WEB_PAGE_TYPE_WATCH':
+#            break
+#    if lst[count - 5] == "/results":
+#        raise Exception("No video found.")
+#    url = f"https://www.youtube.com{lst[count - 5]}"
+#    print("url loaded")
+#    # endregion
+#    # region Youtube DownLoad and Parse
+#    yt = Youtube(url)
+#    yt.formats.first().download()
+#    print("video downloaded")
+#    for file in os.listdir("./"):
+#        if file.endswith(".mp4"):
+#            os.rename(file, "song.mp4")
+#            os.rename(f"song.mp4", f"{get_current_dir()}/song.mp4")
+#            video = VideoFileClip(f"{get_current_dir()}/song.mp4")
+#            video.audio.write_audiofile("song.mp3")
+#            os.rename(f"song.mp3", f"{get_current_dir()}/song.mp3")
+#            video.close()
+#    print("mp4 converted to mp3")
+#    # endregion
+#
+#    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+#    voice.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source=f"{get_current_dir()}/song.mp3"))
+#    voice.source = discord.PCMVolumeTransformer(voice.source)
+#
+#    await send_message(ctx, f"Tocando: {yt.title}")
 
-    # region url
-    search_url = 'https://www.youtube.com/results?q=' + search
-    count = 0
-    cont = requests.get(search_url)
-    lst = str(cont.content).split('"')
-    for i in lst:
-        count += 1
-        if i == 'WEB_PAGE_TYPE_WATCH':
-            break
-    if lst[count - 5] == "/results":
-        raise Exception("No video found.")
-    url = f"https://www.youtube.com{lst[count - 5]}"
-    print("url loaded")
-    # endregion
-    # region Youtube DownLoad and Parse
-    yt = Youtube(url)
-    yt.formats.first().download()
-    print("video downloaded")
-    for file in os.listdir("./"):
-        if file.endswith(".mp4"):
-            os.rename(file, "song.mp4")
-            os.rename(f"song.mp4", f"{get_current_dir()}/song.mp4")
-            video = VideoFileClip(f"{get_current_dir()}/song.mp4")
-            video.audio.write_audiofile("song.mp3")
-            os.rename(f"song.mp3", f"{get_current_dir()}/song.mp3")
-            video.close()
-    print("mp4 converted to mp3")
-    # endregion
-
-    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-    voice.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source=f"{get_current_dir()}/song.mp3"))
-    voice.source = discord.PCMVolumeTransformer(voice.source)
-
-    await send_message(ctx, f"Tocando: {yt.title}")
-
-@client.command(name="parar")
-async def stop(ctx: Context):
-    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-    if voice and voice.is_playing():
-        await send_message(ctx, "paro")
-    voice.stop()
-
-@client.command(name="pausar")
-async def pause(ctx: Context):
-    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-    if voice and voice.is_playing():
-        voice.pause()
-        await send_message(ctx, "pausado")
-    else:
-        await send_message(ctx, "no se esta tocando nada")
-
-@client.command(name="resumir")
-async def resume(ctx: Context):
-    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-    if voice and voice.is_paused():
-        voice.resume()
-        await send_message(ctx, "resumido")
-    else:
-        await send_message(ctx, "el audio no esta pausado")
-
-@client.command(name="irse")
-async def leave(ctx: Context):
-    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-
-    if voice and voice.is_connected():
-        await voice.disconnect()
-        await send_message(ctx, f"me fui de {ctx.message.author.voice.channel}")
-    else:
-        await send_message(ctx, "el bot no esta conectado a ningun canal")
+#@client.command(name="parar")
+#async def stop(ctx: Context):
+#    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+#    if voice and voice.is_playing():
+#        await send_message(ctx, "paro")
+#    voice.stop()
+#
+#@client.command(name="pausar")
+#async def pause(ctx: Context):
+#    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+#    if voice and voice.is_playing():
+#        voice.pause()
+#        await send_message(ctx, "pausado")
+#    else:
+#        await send_message(ctx, "no se esta tocando nada")
+#
+#@client.command(name="resumir")
+#async def resume(ctx: Context):
+#    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+#    if voice and voice.is_paused():
+#        voice.resume()
+#        await send_message(ctx, "resumido")
+#    else:
+#        await send_message(ctx, "el audio no esta pausado")
+#
+#@client.command(name="irse")
+#async def leave(ctx: Context):
+#    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+#
+#    if voice and voice.is_connected():
+#        await voice.disconnect()
+#        await send_message(ctx, f"me fui de {ctx.message.author.voice.channel}")
+#    else:
+#        await send_message(ctx, "el bot no esta conectado a ningun canal")
 
 
 @slash.slash(name="borrar", guild_ids=guild_ids, description="borra la cantidad de mensajes especificada",
@@ -192,82 +189,218 @@ async def delete_line(ctx: SlashContext, del_lines:int):
     await ctx.channel.purge(limit=del_lines)
 
     if del_lines > 1:
-        await send_message(ctx, f"{del_lines} mensajes eliminados")
+        await ctx.send(f"{del_lines} mensajes eliminados")
     else:
-        await send_message(ctx, "1 mensaje eliminado")
+        await ctx.send( "1 mensaje eliminado")
 
 
-@slash.slash(name="canalbienvenida", guild_ids=guild_ids, description="guarda el canal de bienvenida",
-    options=[create_option(name="canal", description="", option_type=7, required=True)],
+@slash.slash(name="canalbienvenida", guild_ids=guild_ids, description="guarda un canal donde se mandaran los mensajes de bienvenida",
+    options=[create_option(name="canal", description="canal a guardar", option_type=7, required=True)],
     connector={"canal": "channel"})
 @commands.has_permissions(administrator=True)
 async def set_welcome_channel(ctx: SlashContext, channel: discord.TextChannel):
     if exists("name", "welcome_stt", ctx.guild, Collection.general.value) is False:
         insert({"name": "welcome_stt", "welcome_channel":0, "welcome_msg":""}, ctx.guild, Collection.general.value)
     modify("name", "welcome_stt", "welcome_channel", channel.id, ctx.guild, Collection.general.value)
-    await send_message(ctx, f"canal de bienvenida {channel}, guardado")
+    await ctx/send(f"canal de bienvenida {channel}, guardado")
 
 
-@slash.slash(name="msgbienvenida", guild_ids=guild_ids, description="guarda el mensaje de bienvenida",
-    options=[create_option(name="mensaje", description="", option_type=3, required=True)], 
+@slash.slash(name="msgbienvenida", guild_ids=guild_ids, description="guarda un mensaje de bienvenida",
+    options=[create_option(name="mensaje", description="mensaje a guardar", option_type=3, required=True)], 
     connector={"mensaje": "msg"})
 @commands.has_permissions(administrator=True)
 async def set_welcome_msg(ctx: SlashContext, *, msg: str):
     if exists("name", "welcome_stt", ctx.guild, Collection.general.value) is False:
         insert({"name": "welcome_stt", "welcome_channel":0, "welcome_msg":""}, ctx.guild, Collection.general.value)
     modify("name", "welcome_stt", "welcome_msg", msg, ctx.guild, Collection.general.value)
-    await send_message(ctx, f"""mensaje de bienvenida "{msg}", guardado""")
+    await ctx.send(f"""mensaje de bienvenida "{msg}", guardado""")
 
 
 @slash.slash(name="operacion", guild_ids=guild_ids, description="realiza una operacion matematica",
     options=[create_option(name="num1", description="numero flotante", option_type=3, required=True), 
              create_option(name="operador", description="operador matematico", option_type=3, required=True),
-             create_option(name="num2", description="numero flotante", option_type=4, required=False)], 
-    connector={"num1": "num1", "operador": "operation", "num2": "num2"})
+             create_option(name="num2", description="numero flotante", option_type=3, required=False)], 
+    connector={"num1": "num1", "operador": "operator", "num2": "num2"})
 async def math_operation(ctx: SlashContext, num1: float, operator: str, num2=0.0):
     if operator == "+":
-        await send_message(ctx, f"{num1 + num2}")
+        await ctx.send(str(num1 + num2))
     elif operator == "-":
-        await send_message(ctx, f"{num1 - num2}")
+        await ctx.send(str(num1 - num2))
     elif operator == "*":
-        await send_message(ctx, f"{num1 * num2}")
+        await ctx.send(str(num1 * num2))
     elif operator == "/":
-        await send_message(ctx, f"{num1 / num2}")
+        await ctx.send(str(num1 / num2))
     elif operator == "^":
-        await send_message(ctx, f"{pow(num1, num2)}")
+        await ctx.send(str(pow(num1, num2)))
     elif operator == "|":
-        await send_message(ctx, f"{math.sqrt(num1)}")
+        await ctx.send(str(math.sqrt(num1)))
     elif operator == "!":
         result = int(1)
         for i in range(1, int(num1)+1):
             result = result * i
 
-        await send_message(ctx, f"{result}")
+        await ctx(f"{result}")
     elif operator == "%":
-        await send_message(ctx, f"{num1 % num2}")
+        await ctx/send(f"{num1 % num2}")
     else:
-        await send_message(ctx, "operador invalido\noperadores validos: +, *, /, ^, |sqrt, !factorial, %modulo")
+        await ctx.send("operador invalido\noperadores validos: +, *, /, ^, |sqrt, !factorial, %modulo")
 
 
-@client.command(name="votacion")
-@commands.has_permissions(administrator=True)
-async def poll(ctx: SlashContext, *, info: str):
-    await ctx.channel.purge(limit=1)
-    name_description = key_split(name_description, "/")
+@slash.slash(name="votacion", guild_ids=guild_ids, description="crea una votacion",
+    options=[
+    create_option(name="titulo", description="titulo de la votacion", option_type=3, required=True), 
+    create_option(name="tiempo", description="tiempo de la votacion en segundos", option_type=4, required=True),
+    create_option(name="tipo_de_voto", description="multiple (votar por varias opciones) unico (votar solo por una opcion)",
+    option_type=3, required=True, choices=[create_choice(name="multiple", value="f"),
+                                           create_choice(name="unico", value="t")]),
+    create_option(name="opciona", description="opcion de la votacion", option_type=3, required=True),
+    create_option(name="opcionb", description="opcion de la votacion", option_type=3, required=True),
+    create_option(name="opcionc", description="opcion de la votacion", option_type=3, required=False),
+    create_option(name="opciond", description="opcion de la votacion", option_type=3, required=False),
+    create_option(name="opcione", description="opcion de la votacion", option_type=3, required=False),
+    create_option(name="opcionf", description="opcion de la votacion", option_type=3, required=False),
+    create_option(name="opciong", description="opcion de la votacion", option_type=3, required=False),
+    create_option(name="opcionh", description="opcion de la votacion", option_type=3, required=False),
+    create_option(name="opcioni", description="opcion de la votacion", option_type=3, required=False),
+    create_option(name="opcionj", description="opcion de la votacion", option_type=3, required=False)],
 
-    if exists("name", name_description[0], ctx.guild, Collection.selectors.value) is True:
-        await ctx.author.send(f"el nombre {name_description[0]} ya existe")
-        return
+    connector={"titulo": "tittle", "tiempo": "time", "tipo_de_voto": "vote_type", "opciona": "option1", 
+    "opcionb": "option2", "opcionc": "option3", "opciond": "option4", "opcione": "option5", "opcionf": "option6", 
+    "opciong": "option7", "opcionh": "option8", "opcioni": "option9", "opcionj": "option10"})
+async def poll(ctx: SlashContext, tittle: str, time: int, vote_type: str, option1: str, option2: str, 
+    option3=None, option4=None, option5=None, option6=None, option7=None, option8=None, option9=None, option10=None):
+    if vote_type == "t":
+        unique_vote = True
+        vote_type = "por una sola opcion"
+    else:
+        unique_vote = False
+        vote_type = "por varias opciones"
 
-    msg = await ctx.channel.send(embed=discord.Embed(title=name_description[0], description=name_description[1]))
-    await msg.add_reaction("❌")
-    _insert = insert({"msg_id": msg.id, "name": name_description[0], "description": name_description[1], 
-        "emoji_role": {}},ctx.guild, Collection.selectors.value)
-    await ctx.author.send(f"id del selector: {_insert.inserted_id}")
+    embed = discord.Embed(title=tittle, description=f"La votacion durara {time} segundos, puedes votar "
+        f"{vote_type}")
+    embed.set_footer(text="Votacion, reacciona a una letra para votar")
+    print("no")
+    msg = await ctx.channel.send(embed=embed)
+    print("yes")
+    poll = {
+        "msg_id": msg.id,
+        "unique_vote": unique_vote,
+        "options": {}
+    }
+
+    poll["options"]["🇦"] = {"votes": [], "description": option1}
+    await msg.add_reaction("🇦")
+    embed.add_field(
+        name=str(option1),
+        value="🇦")
+
+    poll["options"]["🇧"] = {"votes": [], "description": option2}
+    await msg.add_reaction("🇧")
+    embed.add_field(
+        name=str(option1),
+        value="🇧")
+
+    if option3 is not None:
+        poll["options"]["🇨"] = {"votes": [], "description": option3}
+        await msg.add_reaction("🇨")
+        embed.add_field(
+            name=str(option1),
+            value="🇨")
+
+    if option4 is not None:
+        poll["options"]["🇩"] = {"votes": [], "description": option4}
+        await msg.add_reaction("🇩")
+        embed.add_field(
+            name=str(option1),
+            value="🇩")
+
+    if option5 is not None:
+        poll["options"]["🇪"] = {"votes": [], "description": option5}
+        await msg.add_reaction("🇪")
+        embed.add_field(
+            name=str(option1),
+            value="🇪")
+
+    if option6 is not None:
+        poll["options"]["🇫"] = {"votes": [], "description": option6}
+        await msg.add_reaction("🇫")
+        embed.add_field(
+            name=str(option1),
+            value="🇫")
+
+    if option7 is not None:
+        poll["options"]["🇬"] = {"votes": [], "description": option7}
+        await msg.add_reaction("🇬")
+        embed.add_field(
+            name=str(option1),
+            value="🇬")
+
+    if option8 is not None:
+        poll["options"]["🇭"] = {"votes": [], "description": option8}
+        await msg.add_reaction("🇭")
+        embed.add_field(
+            name=str(option1),
+            value="🇭")
+
+    if option9 is not None:
+        poll["options"]["🇮"] ={"votes": [], "description": option9}
+        await msg.add_reaction("🇮")
+        embed.add_field(
+            name=str(option1),
+            value="🇮")
+
+    if option10 is not None:
+        poll["options"]["🇯"] = {"votes": [], "description": option10}
+        await msg.add_reaction("🇯")
+        embed.add_field(
+            name=str(option1),
+            value="🇯")
+    
+    insert(poll, ctx.guild, Collection.polls.value)
+
+    msg.edit(embed=embed)
+
+
+    await asyncio.sleep(time)
+
+
+    poll = query("msg_id", msg.id, ctx.guild, Collection.polls.value)
+
+    voted_options = [len(poll["options"]["🇦"]["votes"]), "🇦", option1]
+    for emoji in poll["options"].keys():
+        i = 0
+        for option in voted_options:
+            inserted = False
+
+            vote_count = len(poll["options"][emoji]["votes"])
+            if option[0] == vote_count:
+                if inserted == False:
+                    inserted = True
+                    voted_options.append([len(poll["options"][option]["votes"]), emoji, poll["options"][reaction.emoji]["description"]])
+
+            if option[0].count < vote_count:
+                voted_options.remove(option)
+                if inserted == False:
+                    inserted = True
+                    voted_options.append([len(poll["options"][option]["votes"]), emoji, poll["options"][reaction.emoji]["description"]])
+
+            i += 1
+
+    options = ""
+    for option in voted_options:
+        options = f"{options}{option[2]}, {option[1]}, {option[0]} votos; "
+
+    await msg.delete()
+    delete("msg_id", msg.id, ctx.guild, Collection.polls.value)
+
+    if len(voted_options) > 1:
+        await ctx.channel.send(f"empate entre: {options}")
+    else:
+        await ctx.channel.send(f"opcion ganadora: {options}")        
 
 
 @slash.slash(name="rol", guild_ids=guild_ids, description="asigna o remueve el rol especificado",
-    options=[create_option(name="rol", description="", option_type=8, required=True)], 
+    options=[create_option(name="rol", description="mencion del rol", option_type=8, required=True)], 
     connector={"rol": "role"})
 async def toggle_role(ctx: SlashContext, role: discord.Role):
     for _role in query_all(ctx.guild, Collection.role_black_list.value):
@@ -284,8 +417,8 @@ async def toggle_role(ctx: SlashContext, role: discord.Role):
 
 
 @slash.slash(name="rolpara", guild_ids=guild_ids, description="asigna o remueve el rol especificado en el usuario especificado",
-    options=[create_option(name="rol", description="", option_type=8, required=True),
-             create_option(name="usuario", description="", option_type=6, required=True)], 
+    options=[create_option(name="rol", description="mencion del rol", option_type=8, required=True),
+             create_option(name="usuario", description="mencion del usuario", option_type=6, required=True)], 
     connector={"rol": "role", "usuario": "user"})
 @commands.has_permissions(administrator=True)
 async def toggle_role_to(ctx: SlashContext, role: discord.Role, user: discord.Member):
@@ -316,7 +449,7 @@ async def get_roles_black_list(ctx: SlashContext):
 
 
 @slash.slash(name="arolesnegros", guild_ids=guild_ids, description="asigna o remueve un rol de la lista negra",
-    options=[create_option(name="rol", description="", option_type=8, required=True)], 
+    options=[create_option(name="rol", description="mencion del rol", option_type=8, required=True)], 
     connector={"rol": "role"})
 @commands.has_permissions(administrator=True)
 async def toggle_role_black_list(ctx: SlashContext, role: discord.Role):
@@ -330,7 +463,7 @@ async def toggle_role_black_list(ctx: SlashContext, role: discord.Role):
 
 @slash.slash(name="rolselec", guild_ids=guild_ids, description="crea un selector de roles",
     options=[create_option(name="nombre", description="nombre unico", option_type=3, required=True),
-             create_option(name="descripcion", description="", option_type=3, required=True)], 
+             create_option(name="descripcion", description="descripcion del selector", option_type=3, required=True)], 
     connector={"nombre": "name", "descripcion": "description"})
 @commands.has_permissions(administrator=True)
 async def role_selector(ctx: SlashContext, name: str, description: str):
@@ -393,8 +526,8 @@ async def edit_role_selector(ctx: SlashContext, _id: str, name="", description="
 
 @slash.slash(name="rolaselec", guild_ids=guild_ids, description="agrega un rol a un selector de roles",
     options=[create_option(name="id", description="id del selector", option_type=3, required=True),
-             create_option(name="emoji", description="", option_type=3, required=True),
-             create_option(name="rol", description="", option_type=8, required=True)], 
+             create_option(name="emoji", description="emoji representativo del rol", option_type=3, required=True),
+             create_option(name="rol", description="mencion del rol", option_type=8, required=True)], 
     connector={"id": "_id", "emoji": "eomji", "rol": "role"})
 @commands.has_permissions(administrator=True)
 async def toggle_role_to_selector(ctx: SlashContext, _id, emoji, role: discord.Role):
