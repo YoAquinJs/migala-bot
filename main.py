@@ -28,5 +28,5 @@ heroku login
 git add .
 git commit -am "whatever"
 git push heroku master
-heroku logs -a cb-economy-bot
+heroku logs -a migala-bot
 """
