@@ -8,8 +8,8 @@ mongo_client = None
 global_settings = get_global_settings()
 
 
-def init_database():
-    """Inicializa el Cliente de la base de datos en el BonoboCluster de MongoDB
+def init_database(user: str, password: str):
+    """Inicializa el Cliente de la base de datos
 
         Args:
                 user (str): Usuario del Cluster de MongoDB
@@ -19,7 +19,7 @@ def init_database():
     global mongo_client
 
     # URL de la base de datos en Mongo Atlas
-    url_db = f"mongodb+srv://{global_settings['mongoUser']}:{global_settings['mongoPassword']}" \
+    url_db = f"mongodb+srv://{user}:{password}" \
              f"@migalabotcluster.ksrmy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
     mongo_client = pymongo.MongoClient(url_db)
     print("data base initialized")
@@ -33,7 +33,7 @@ def get_mongo_client() -> pymongo.MongoClient:
     """
 
     if mongo_client is None:
-        init_database()
+        init_database(global_settings["mongoUser"], global_settings["mongoPassword"])
 
     return mongo_client
 

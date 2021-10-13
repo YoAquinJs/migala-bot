@@ -1,3 +1,5 @@
+"""El módulo discord_client se encarga de crear, manejar y configurar el cliente de discord del bot, inicializacion del cliente y aceso a este"""
+
 import discord
 from discord.ext import commands
 from bot.bot_utils import get_global_settings

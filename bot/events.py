@@ -1,3 +1,5 @@
+"""El módulo events maneja eventos de discord, mensaje de inicio en consola, mensajes de bienvenida y reacciones a selectores de roles"""
+
 import discord
 from discord.ext import commands
 
@@ -11,6 +13,9 @@ global_settings = get_global_settings()
 
 @client.event
 async def on_ready():
+    """(Evento de discord, se llama cuando el bot esta listo para inicializarse) imprime el nombre e id del bot
+    """
+
     print("logged as")
     print(client.user.name)
     print(client.user.id)
@@ -46,7 +51,16 @@ async def on_ready():
 
 @client.event
 async def on_member_join(member):
+    """(Evento de discord, se llama cuandoun nuevo miembro se une a un servidor) envia un mensaje de bienvenida
+        personalizado al nuevo usuario
+
+        Args:
+                member (discord.Member): Nuevo miembro en el servidor
+    """
+
     welcome = query("name", "welcome_stt", member.guild, Collection.general.value)
+    if welcome is None:
+        return
     embed = discord.Embed(title=f"Bienvenido {member.display_name}, estamos gustosos de tu ingreso al proyecto", 
                           description=welcome["welcome_msg"], color=discord.colour.Color.gold())
     embed.set_image(url=member.avatar_url)
@@ -58,6 +72,13 @@ async def on_member_join(member):
 
 @client.event
 async def on_raw_reaction_add(payload):
+    """(Evento de discord, se llama cuando un usuario reacciona a un mensaje del bot) si se esta reaccionando a un
+        selector de roles se le asigna el rol correspondiente al emoji al usuario
+
+        Args:
+                payload (discord.On_Raw_Reaction_Add): Contiene la informacion de la reaccion
+    """
+
     if payload.member.bot:
         return
 
@@ -105,6 +126,13 @@ async def on_raw_reaction_add(payload):
 
 @client.event
 async def on_raw_reaction_remove(payload):
+    """(Evento de discord, se llama cuando un usuario remueve una reaccion a un mensaje del bot) si se remueve la
+        reaccion en un mensaje del bot se le remueve el rol correspondiente al emoji al usuario
+
+        Args:
+                payload (discord.On_Raw_Reaction_Add): Contiene la informacion de la reaccion
+    """
+
     guild = client.get_guild(payload.guild_id)
     poll = query("msg_id", payload.message_id, guild, Collection.polls.value)
 

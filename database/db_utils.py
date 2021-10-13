@@ -18,12 +18,12 @@ class Collection(Enum):
 
 
 def insert(file: dict, guild: discord.Guild, collection: str):
-    """Inserta un archivo a la base de datos de Mongo
+    """Inserta un archivo a la base de datos
 
         Args:
-                file (dict): Diccionario con los datos de un log
-                guild (discord.Guild): Es la información de una Guild de discord
-                collection (str): Nombre de la colection a ingresar el archivo
+                file (dict): Diccionario con los datos
+                guild (discord.Guild): Información de una Guild de discord
+                collection (str): Nombre de la coleccion a ingresar el archivo
 
         Returns:
                 pymongo.results.InsertOneResult: Contiene la información de la inserción en MongoDB
@@ -35,15 +35,15 @@ def insert(file: dict, guild: discord.Guild, collection: str):
 
 
 def modify(key: str, value, modify_key: str, modify_value, guild: discord.Guild, collection: str):
-    """Modifica un archivo con la llave y valor especificados en la base de datos de Mongo
+    """Modifica un archivo con la llave y valor especificados en la base de datos
 
         Args:
-                key (str): Llave a comparar
-                value (indeterminado): Valor a comparar
-                modify_key (dict): Nueva llave a cambiar
-                modify_value (indeterminado): Nuevo valor a cambiar
-                guild (discord.Guild): Es la información de una Guild de discord
-                collection (str): Nombre de la colection a ingresar el archivo
+                key (str): Llave a buscar
+                value (indeterminado): Valor a buscar
+                modify_key (dict): Llave del valor a modificar
+                modify_value (indeterminado): Nuevo valor
+                guild (discord.Guild): Información de una Guild de discord
+                collection (str): Nombre de la coleccion a ingresar el archivo
 
         Returns:
                 pymongo.results.UpdateOneResult: Contiene la información de la modificacion en MongoDB
@@ -55,14 +55,14 @@ def modify(key: str, value, modify_key: str, modify_value, guild: discord.Guild,
 
 
 def replace(key: str, value, file: dict, guild: discord.Guild, collection: str):
-    """Inserta un archivo a la base de datos de Mongo
+    """Inserta un archivo a la base de datos
 
         Args:
                 key (str): Llave a buscar
                 value (indeterminado): Valor a buscar
-                file (dict): Diccionario con los datos de un log
-                guild (discord.Guild): Es la información de una Guild de discord
-                collection (str): Nombre de la colection a ingresar el archivo
+                file (dict): Diccionario con los datos
+                guild (discord.Guild): Información de una Guild de discord
+                collection (str): Nombre de la coleccion a ingresar el archivo
 
         Returns:
                 pymongo.results.InsertOneResult: Contiene la información de la inserción en MongoDB
@@ -74,13 +74,13 @@ def replace(key: str, value, file: dict, guild: discord.Guild, collection: str):
 
 
 def delete(key: str, value, guild: discord.Guild, collection: str):
-    """Elimina un archivo en la base de datos de Mongo
+    """Elimina un archivo en la base de datos
 
         Args:
                 key (str): Llave a comparar
                 value (indeterminado): Valor a comparar
-                guild (discord.Guild): Es la información de una Guild de discord
-                collection (str): Nombre de la colection a ingresar el archivo
+                guild (discord.Guild): Información de una Guild de discord
+                collection (str): Nombre de la coleccion a ingresar el archivo
 
         Returns:
                 pymongo.results.DeleteResult: Contiene la información de la eliminacion en MongoDB
@@ -92,13 +92,13 @@ def delete(key: str, value, guild: discord.Guild, collection: str):
 
 
 def query(key: str, value, guild: discord.Guild, collection: str):
-    """Obtiene un archivo en la base de datos de Mongo
+    """Obtiene un archivo de la base de datos
 
         Args:
-                key (str): llave a buscar
-                value (indeterminado): valor de la llave a buscar
-                guild (discord.Guild): Es la información de una Guild de discord
-                collection (str): Nombre de la colleccion en la cual se buscara el archivo
+                key (str): Llave a buscar
+                value (indeterminado): Valor a buscar
+                guild (discord.Guild): Información de una Guild de discord
+                collection (str): Nombre de la coleccion en la cual se buscara el archivo
 
         Returns:
                 dict: Archivo encontrado o None si no existe
@@ -110,15 +110,15 @@ def query(key: str, value, guild: discord.Guild, collection: str):
 
 
 def query_id(file_id: str, guild: discord.Guild, collection: str):
-    """Obtiene un archivo por su id en la base de datos de Mongo
+    """Obtiene un archivo por su id en la base de datos
 
         Args:
-                file_id (str): id del archivo
-                guild (discord.Guild): Es la información de una Guild de discord
-                collection (str): Nombre de la colleccion en la cual se buscara el archivo
+                file_id (str): Id del archivo
+                guild (discord.Guild): Información de una Guild de discord
+                collection (str): Nombre de la coleccion en la cual se buscara el archivo
 
         Returns:
-                dict: Es un diccionario con la transacción o None si no la encuentra
+                dict: Archivo encontrado o None si no existe
     """
 
     database_name = get_database_name(guild)
@@ -130,11 +130,11 @@ def query_id(file_id: str, guild: discord.Guild, collection: str):
 
 
 def query_all(guild: discord.Guild, collection: str):
-    """Obtiene todos los archivos en la coleccion especificada en la base de datos de Mongo
+    """Obtiene todos los archivos en la coleccion especificada en la base de datos
 
         Args:
-                guild (discord.Guild): Es la información de una Guild de discord
-                collection (str): Nombre de la colleccion en la cual se buscara el archivo
+                guild (discord.Guild): Información de una Guild de discord
+                collection (str): Nombre de la coleccion en la cual se buscara el archivo
 
         Returns:
                 pymongo.cursor.Cursor: Clase iterable sobre Mongo query results de todos los archivos en la coleccion
@@ -146,16 +146,16 @@ def query_all(guild: discord.Guild, collection: str):
 
 
 def exists(key: str, value, guild: discord.Guild, collection: str):
-    """Revisa la existencia de un archivo en la base de datos de Mongo
+    """Revisa la existencia de un archivo en la base de datos
 
         Args:
-                key (str): Llave a comparar
-                value (indeterminado): Valor a comparar
-                guild (discord.Guild): Es la información de una Guild de discord
-                collection (str): Nombre de la colleccion en la cual se buscara el archivo
+                key (str): Llave a buscar
+                value (indeterminado): Valor a buscar
+                guild (discord.Guild): Información de una Guild de discord
+                collection (str): Nombre de la coleccion en la cual se buscara el archivo
 
         Returns:
-                pymongo.cursor.Cursor: Clase iterable sobre Mongo query results de todos los archivos en la coleccion
+                bool: Existencia del archivo
     """
 
     database_name = get_database_name(guild)
@@ -168,14 +168,14 @@ def exists(key: str, value, guild: discord.Guild, collection: str):
 
 
 def query_rnd(guild: discord.Guild, collection: str):
-    """Obtiene un archivo aleatorio en la base de datos de Mongo
+    """Obtiene un archivo aleatorio en la base de datos
 
         Args:
-                guild (discord.Guild): Es la información de una Guild de discord
-                collection (str): Nombre de la colleccion en la cual se buscara el archivo
+                guild (discord.Guild): Información de una Guild de discord
+                collection (str): Nombre de la coleccion en la cual se buscara el archivo
 
         Returns:
-                dict: Es un diccionario con la informacion del archivo
+                dict: Archivo encontrado o None si no hay ningun archivo en la coleccion
     """
 
     database_name = get_database_name(guild)
@@ -193,18 +193,18 @@ def query_rnd(guild: discord.Guild, collection: str):
 
 
 def get_database_name(guild: discord.Guild) -> str:
-    """Esta función genera el nombre de la base de datos de una guild de discord
+    """Genera el nombre de la base de datos de una guild de discord
 
         Args:
-                guild (discord.Guild): Es la información de una Guild de discord
+                guild (discord.Guild): Información de una Guild de discord
 
         Returns:
-                str: Nombre único de la base de datos para el server de discord
+                str: Nombre único de la base de datos para el servidor de discord
     """
 
     name = guild.name
     if len(name) > 20:
-        # Esta comprobacion se hace porque mongo no acepta nombres de base de datos mayor a 64 caracteres
+        # limitacion del nombre del nombre a menos de 64 caracteres
         name = name.replace("a", "")
         name = name.replace("e", "")
         name = name.replace("i", "")
