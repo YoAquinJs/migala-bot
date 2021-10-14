@@ -72,8 +72,8 @@ async def on_member_join(member):
 
 @client.event
 async def on_raw_reaction_add(payload):
-    """(Evento de discord, se llama cuando un usuario reacciona a un mensaje del bot) si se esta reaccionando a un
-        selector de roles se le asigna el rol correspondiente al emoji al usuario
+    """(Evento de discord, se llama cuando un usuario reacciona a un mensaje del bot) asgigna o remueve roles en
+        selectores de roles, guarda informacion de votaciones
 
         Args:
                 payload (discord.On_Raw_Reaction_Add): Contiene la informacion de la reaccion
@@ -113,6 +113,9 @@ async def on_raw_reaction_add(payload):
         if str(payload.emoji) in poll["options"].keys():
             poll["options"][str(payload.emoji)]["votes"].append(payload.member.id)
 
+            if poll['anonimous_vote'] is False:
+                poll["options"][str(payload.emoji)]["voters"].append(payload.member.name)
+
         if poll["unique_vote"] is True:
             for emoji in poll["options"].keys():
                 if str(payload.emoji) == emoji:
@@ -126,11 +129,11 @@ async def on_raw_reaction_add(payload):
 
 @client.event
 async def on_raw_reaction_remove(payload):
-    """(Evento de discord, se llama cuando un usuario remueve una reaccion a un mensaje del bot) si se remueve la
-        reaccion en un mensaje del bot se le remueve el rol correspondiente al emoji al usuario
+    """(Evento de discord, se llama cuando un usuario remueve una reaccion a un mensaje del bot) elimina el voto de una
+        votacion
 
         Args:
-                payload (discord.On_Raw_Reaction_Add): Contiene la informacion de la reaccion
+                payload (discord.On_Raw_Reaction_Remove): Contiene la informacion de la anulacion de la reaccion
     """
 
     guild = client.get_guild(payload.guild_id)

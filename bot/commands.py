@@ -19,9 +19,10 @@ from database.db_utils import *
 from database.mongo_client import close_client
 
 client = get_client()
-slash = SlashCommand(client, sync_commands=True)
-guild_ids = [837859767308910612]
 global_settings = get_global_settings()
+
+slash = SlashCommand(client, sync_commands=True)
+guild_ids = global_settings["guild_ids"]
 
 
 @client.command(name="stop")
@@ -191,7 +192,7 @@ async def math_operation(ctx: SlashContext, num1: float, operator: str, num2=0.0
              connector={"titulo": "tittle", "tiempo": "time", "tipo_de_voto": "vote_type", "voto_anonimo": "anonimous",
                         "opciona": "option1", "opcionb": "option2", "opcionc": "option3", "opciond": "option4",
                         "opcione": "option5", "opcionf": "option6", "opciong": "option7", "opcionh": "option8",
-                        "opcioni": "option9", "opcionj": "option10"})
+                        "opcioni": "option9", "opcionj": "option10"}, guild_ids=guild_ids)
 async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonimous: str, option1: str, option2: str,
                option3=None, option4=None, option5=None, option6=None, option7=None, option8=None, option9=None,
                option10=None):
@@ -265,12 +266,18 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
     }
 
     poll["options"]["🇦"] = {"votes": [], "description": option1}
+    if anonimous is False:
+        poll["options"]["🇦"] = {"votes": [], "description": option1, "voters": []}
+
     await msg.add_reaction("🇦")
     embed.add_field(
         name=str(option1),
         value="🇦")
 
     poll["options"]["🇧"] = {"votes": [], "description": option2}
+    if anonimous is False:
+        poll["options"]["🇧"] = {"votes": [], "description": option1, "voters": []}
+
     await msg.add_reaction("🇧")
     embed.add_field(
         name=str(option2),
@@ -278,48 +285,72 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
 
     if option3 is not None:
         poll["options"]["🇨"] = {"votes": [], "description": option3}
+        if anonimous is False:
+            poll["options"]["🇨"] = {"votes": [], "description": option1, "voters": []}
+
         await msg.add_reaction("🇨")
         embed.add_field(
             name=str(option3),
             value="🇨")
     if option4 is not None:
         poll["options"]["🇩"] = {"votes": [], "description": option4}
+        if anonimous is False:
+            poll["options"]["🇩"] = {"votes": [], "description": option1, "voters": []}
+
         await msg.add_reaction("🇩")
         embed.add_field(
             name=str(option4),
             value="🇩")
     if option5 is not None:
         poll["options"]["🇪"] = {"votes": [], "description": option5}
+        if anonimous is False:
+            poll["options"]["🇪"] = {"votes": [], "description": option1, "voters": []}
+
         await msg.add_reaction("🇪")
         embed.add_field(
             name=str(option5),
             value="🇪")
     if option6 is not None:
         poll["options"]["🇫"] = {"votes": [], "description": option6}
+        if anonimous is False:
+            poll["options"]["🇫"] = {"votes": [], "description": option1, "voters": []}
+
         await msg.add_reaction("🇫")
         embed.add_field(
             name=str(option6),
             value="🇫")
     if option7 is not None:
         poll["options"]["🇬"] = {"votes": [], "description": option7}
+        if anonimous is False:
+            poll["options"]["🇬"] = {"votes": [], "description": option1, "voters": []}
+
         await msg.add_reaction("🇬")
         embed.add_field(
             name=str(option7),
             value="🇬")
     if option8 is not None:
         poll["options"]["🇭"] = {"votes": [], "description": option8}
+        if anonimous is False:
+            poll["options"]["🇭"] = {"votes": [], "description": option1, "voters": []}
+
         await msg.add_reaction("🇭")
         embed.add_field(
             name=str(option8),
             value="🇭")
     if option9 is not None:
-        poll["options"]["🇮"] ={"votes": [], "description": option9}
+        poll["options"]["🇮"] = {"votes": [], "description": option9}
+        if anonimous is False:
+            poll["options"]["🇮"] = {"votes": [], "description": option1, "voters": []}
+
         await msg.add_reaction("🇮")
         embed.add_field(
             name=str(option9),
             value="🇮")
     if option10 is not None:
         poll["options"]["🇯"] = {"votes": [], "description": option10}
+        if anonimous is False:
+            poll["options"]["🇯"] = {"votes": [], "description": option1, "voters": []}
+
         await msg.add_reaction("🇯")
         embed.add_field(
             name=str(option10),
@@ -336,12 +367,13 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
 
     options = ""
     for key in poll["options"].keys():
-        options = f"{options}{poll['options'][key]['description']}, {key}, {len(poll['options'][key]['votes'])} votos; "
+        options = f"{options}{key}, {poll['options'][key]['description']}, {len(poll['options'][key]['votes'])} " \
+                  f"votos, {'voto anonimo' if anonimous is True else str(poll['options'][key]['voters'])[1:-1]}\n"
 
     await msg.delete()
     delete("msg_id", msg.id, ctx.guild, Collection.polls.value)
 
-    await ctx.channel.send(f"Titulo: {tittle} resultados: {options}")
+    await ctx.channel.send(f"Votacion: {tittle}\n**Resultados:**\n{options}")
 
 
 @slash.slash(name="rol", description="asigna o remueve el rol especificado (si no esta en la lista negra)",

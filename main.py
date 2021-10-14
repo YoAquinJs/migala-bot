@@ -3,8 +3,6 @@ from database import mongo_client, db_utils
 
 global_settings = bot_utils.get_global_settings()
 
-mongo_client.init_database(global_settings["mongoUser"], global_settings["mongoPassword"])
-
 client = discord_client.get_client()
 client.run(global_settings["token"])
 
