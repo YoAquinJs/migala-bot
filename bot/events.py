@@ -113,7 +113,7 @@ async def on_raw_reaction_add(payload):
         if str(payload.emoji) in poll["options"].keys():
             poll["options"][str(payload.emoji)]["votes"].append(payload.member.id)
 
-            if poll['anonimous_vote'] is False:
+            if poll['anonymous_vote'] is False:
                 poll["options"][str(payload.emoji)]["voters"].append(payload.member.name)
 
         if poll["unique_vote"] is True:
@@ -141,9 +141,11 @@ async def on_raw_reaction_remove(payload):
 
     if poll is not None:
         user = await client.fetch_user(payload.user_id)
-        user_id = user.id
 
         if str(payload.emoji) in poll["options"].keys():
-            poll["options"][str(payload.emoji)]["votes"].remove(user_id)
+            poll["options"][str(payload.emoji)]["votes"].remove(user.id)
+
+            if poll['anonymous_vote'] is False:
+                poll["options"][str(payload.emoji)]["voters"].remove(user.name)
 
         modify("msg_id", payload.message_id, "options", poll["options"], guild, Collection.polls.value)

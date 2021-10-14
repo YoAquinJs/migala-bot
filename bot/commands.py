@@ -189,11 +189,11 @@ async def math_operation(ctx: SlashContext, num1: float, operator: str, num2=0.0
                       create_option(name="opcioni", description="opcion de la votacion", option_type=3, required=False),
                       create_option(name="opcionj", description="opcion de la votacion", option_type=3,
                                     required=False)],
-             connector={"titulo": "tittle", "tiempo": "time", "tipo_de_voto": "vote_type", "voto_anonimo": "anonimous",
+             connector={"titulo": "tittle", "tiempo": "time", "tipo_de_voto": "vote_type", "voto_anonimo": "anonymous",
                         "opciona": "option1", "opcionb": "option2", "opcionc": "option3", "opciond": "option4",
                         "opcione": "option5", "opcionf": "option6", "opciong": "option7", "opcionh": "option8",
                         "opcioni": "option9", "opcionj": "option10"}, guild_ids=guild_ids)
-async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonimous: str, option1: str, option2: str,
+async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonymous: str, option1: str, option2: str,
                option3=None, option4=None, option5=None, option6=None, option7=None, option8=None, option9=None,
                option10=None):
     """Genera una votacion con los parametros seleccionados (slashCommand)
@@ -203,7 +203,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
                     tittle (str): Titulo de la votacion
                     time (str): Duracion de la votacion
                     vote_type (str): 'f' varias opciones, 't' opcion unica
-                    anonimous (str): 'f' voto anonimo, 't' voto publico
+                    anonymous (str): 'f' voto anonimo, 't' voto publico
                     option1 (str): Descripcion de la opcion 1
                     option2 (str): Descripcion de la opcion 2
                     option3 (str): Descripcion de la opcion 3
@@ -223,11 +223,11 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
         unique_vote = False
         vote_type = "por varias opciones"
 
-    if anonimous == "f":
-        anonimous = True
+    if anonymous == "f":
+        anonymous = True
         vote_type += ", voto anonimo"
     else:
-        anonimous = False
+        anonymous = False
         vote_type += ", voto publico"
 
     secs = 0
@@ -261,12 +261,12 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
         "msg_id": msg.id,
         "user_id": ctx.author.id,
         "unique_vote": unique_vote,
-        "anonimous_vote": anonimous,
+        "anonymous_vote": anonymous,
         "options": {}
     }
 
     poll["options"]["🇦"] = {"votes": [], "description": option1}
-    if anonimous is False:
+    if anonymous is False:
         poll["options"]["🇦"] = {"votes": [], "description": option1, "voters": []}
 
     await msg.add_reaction("🇦")
@@ -275,7 +275,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
         value="🇦")
 
     poll["options"]["🇧"] = {"votes": [], "description": option2}
-    if anonimous is False:
+    if anonymous is False:
         poll["options"]["🇧"] = {"votes": [], "description": option1, "voters": []}
 
     await msg.add_reaction("🇧")
@@ -285,7 +285,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
 
     if option3 is not None:
         poll["options"]["🇨"] = {"votes": [], "description": option3}
-        if anonimous is False:
+        if anonymous is False:
             poll["options"]["🇨"] = {"votes": [], "description": option1, "voters": []}
 
         await msg.add_reaction("🇨")
@@ -294,7 +294,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
             value="🇨")
     if option4 is not None:
         poll["options"]["🇩"] = {"votes": [], "description": option4}
-        if anonimous is False:
+        if anonymous is False:
             poll["options"]["🇩"] = {"votes": [], "description": option1, "voters": []}
 
         await msg.add_reaction("🇩")
@@ -303,7 +303,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
             value="🇩")
     if option5 is not None:
         poll["options"]["🇪"] = {"votes": [], "description": option5}
-        if anonimous is False:
+        if anonymous is False:
             poll["options"]["🇪"] = {"votes": [], "description": option1, "voters": []}
 
         await msg.add_reaction("🇪")
@@ -312,7 +312,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
             value="🇪")
     if option6 is not None:
         poll["options"]["🇫"] = {"votes": [], "description": option6}
-        if anonimous is False:
+        if anonymous is False:
             poll["options"]["🇫"] = {"votes": [], "description": option1, "voters": []}
 
         await msg.add_reaction("🇫")
@@ -321,7 +321,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
             value="🇫")
     if option7 is not None:
         poll["options"]["🇬"] = {"votes": [], "description": option7}
-        if anonimous is False:
+        if anonymous is False:
             poll["options"]["🇬"] = {"votes": [], "description": option1, "voters": []}
 
         await msg.add_reaction("🇬")
@@ -330,7 +330,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
             value="🇬")
     if option8 is not None:
         poll["options"]["🇭"] = {"votes": [], "description": option8}
-        if anonimous is False:
+        if anonymous is False:
             poll["options"]["🇭"] = {"votes": [], "description": option1, "voters": []}
 
         await msg.add_reaction("🇭")
@@ -339,7 +339,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
             value="🇭")
     if option9 is not None:
         poll["options"]["🇮"] = {"votes": [], "description": option9}
-        if anonimous is False:
+        if anonymous is False:
             poll["options"]["🇮"] = {"votes": [], "description": option1, "voters": []}
 
         await msg.add_reaction("🇮")
@@ -348,7 +348,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
             value="🇮")
     if option10 is not None:
         poll["options"]["🇯"] = {"votes": [], "description": option10}
-        if anonimous is False:
+        if anonymous is False:
             poll["options"]["🇯"] = {"votes": [], "description": option1, "voters": []}
 
         await msg.add_reaction("🇯")
@@ -368,7 +368,7 @@ async def poll(ctx: SlashContext, tittle: str, time: str, vote_type: str, anonim
     options = ""
     for key in poll["options"].keys():
         options = f"{options}{key}, {poll['options'][key]['description']}, {len(poll['options'][key]['votes'])} " \
-                  f"votos, {'voto anonimo' if anonimous is True else str(poll['options'][key]['voters'])[1:-1]}\n"
+                  f"votos, {'voto anonimo' if anonymous is True else str(poll['options'][key]['voters'])[1:-1]}\n"
 
     await msg.delete()
     delete("msg_id", msg.id, ctx.guild, Collection.polls.value)
